@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var CoordinatesMap = make(map[models.Coordinate]float64)
@@ -20,6 +21,9 @@ func GetZ(c models.Coordinate, lookup map[models.Coordinate]float64) float64 {
 }
 
 func ReadCoordinatesFromFile() {
+	start := time.Now()
+	fmt.Println("Reading coordinates from file...")
+
 	// Open the file
 	file, err := os.Open("coordinates/altis.txt")
 	if err != nil {
@@ -56,4 +60,8 @@ func ReadCoordinatesFromFile() {
 		fmt.Println("Error reading file:", err)
 		return
 	}
+
+	fmt.Println("Coordinates read from file:", len(CoordinatesMap))
+	elapsed := time.Since(start)
+	fmt.Printf("Time taken: %s\n", elapsed)
 }
