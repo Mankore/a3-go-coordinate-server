@@ -4,6 +4,7 @@ import (
 	"a3-go-coordinate-server/models"
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 	"strings"
@@ -13,7 +14,7 @@ var CoordinatesMap = make(map[models.Coordinate]float64)
 
 func GetZ(c models.Coordinate, lookup map[models.Coordinate]float64) float64 {
 	if z, found := lookup[c]; found {
-		return z
+		return math.Round(z*100) / 100
 	}
 	return 0
 }
