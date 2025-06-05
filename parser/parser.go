@@ -11,27 +11,29 @@ import (
 	"time"
 )
 
-var CoordinatesMap = make(map[models.Coordinate]float64)
+var MapsMap = make(map[string]map[models.Coordinate]float32)
 
-func GetZ(c models.Coordinate, lookup map[models.Coordinate]float64) float64 {
+func GetZ(c models.Coordinate, lookup map[models.Coordinate]float32) float32 {
 	if z, found := lookup[c]; found {
-		return math.Round(z*100) / 100
+		return float32(math.Round(float64(z)*100) / 100)
 	}
 	return 0
 }
 
-func ReadCoordinatesFromFile() {
+func ReadCoordinatesFromFile(mapName string) {
 	start := time.Now()
-	fmt.Println("Reading coordinates from file...")
+	fmt.Println("Reading coordinates from file... ", mapName)
 
 	// Open the file
-	file, err := os.Open("coordinates/altis.txt")
+	filePath := fmt.Sprintf("coordinates/%s.txt", mapName)
+	file, err := os.Open(filePath)
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
 	}
 	defer file.Close()
 
+	MapsMap[mapName] = make(map[models.Coordinate]float32)
 	// Buffered file reading
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -53,7 +55,7 @@ func ReadCoordinatesFromFile() {
 
 		// Create Coordinate struct and store in map
 		key := models.Coordinate{X: x, Y: y}
-		CoordinatesMap[key] = z
+		MapsMap[mapName][key] = float32(z)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -61,7 +63,7 @@ func ReadCoordinatesFromFile() {
 		return
 	}
 
-	fmt.Println("Coordinates read from file:", len(CoordinatesMap))
+	fmt.Println("Coordinates read from file:", len(MapsMap[mapName]))
 	elapsed := time.Since(start)
 	fmt.Printf("Time taken: %s\n", elapsed)
 }

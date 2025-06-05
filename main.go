@@ -15,7 +15,8 @@ func setupRoutes(app *fiber.App) {
 }
 
 func main() {
-	parser.ReadCoordinatesFromFile()
+	defaultMap := "altis"
+	parser.ReadCoordinatesFromFile(defaultMap)
 
 	app := fiber.New()
 	app.Use(cors.New(cors.Config{
